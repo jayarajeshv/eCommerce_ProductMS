@@ -1,13 +1,15 @@
 package com.ecommerce.productservice.services;
 
+import com.ecommerce.productservice.exceptions.NoProductsFoundException;
+import com.ecommerce.productservice.exceptions.ProductNotFoundException;
 import com.ecommerce.productservice.models.Product;
 
 import java.util.List;
 
 public interface IProductService {
-    Product getProduct(Long productId);
+    Product getProduct(Long productId) throws ProductNotFoundException;
 
-    List<Product> getAllProducts();
+    List<Product> getAllProducts() throws NoProductsFoundException;
 
     Product createProduct(Product product);
 

@@ -1,11 +1,14 @@
 package com.ecommerce.productservice.services;
 
 import com.ecommerce.productservice.dtos.FakeStoreProductDto;
+import com.ecommerce.productservice.exceptions.NoProductsFoundException;
+import com.ecommerce.productservice.exceptions.ProductNotFoundException;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,16 +24,21 @@ public class FakeStoreProductService implements IProductService {
     }
 
     @Override
-    public Product getProduct(Long productId) {
+    public Product getProduct(Long productId) throws ProductNotFoundException {
         FakeStoreProductDto fakeStoreProductDto = restTemplate.getForObject(fakestoreUrl + productId, FakeStoreProductDto.class);
+        if (fakeStoreProductDto == null) {
+            throw new ProductNotFoundException("Sorry Product with id " + productId + " not found :-(", productId);
+        }
         return convertFakeStoreDtoToProduct(fakeStoreProductDto);
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForObject(fakestoreUrl, FakeStoreProductDto[].class);
+    public List<Product> getAllProducts() throws NoProductsFoundException {
         List<Product> products = new ArrayList<>();
-        assert fakeStoreProductDtos != null;
+        FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForObject(fakestoreUrl+"/test", FakeStoreProductDto[].class);
+        if (fakeStoreProductDtos == null) {
+            throw new NoProductsFoundException("No Products Found");
+        }
         for (FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos) {
             products.add(convertFakeStoreDtoToProduct(fakeStoreProductDto));
         }
