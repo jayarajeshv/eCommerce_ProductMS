@@ -1,10 +1,17 @@
 package com.ecommerce.productservice.models;
 
-import lombok.Data;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
+@MappedSuperclass
 public abstract class BaseModel {
+    @Id
     Long id;
     Date createdAt;
     Date modifiedAt;

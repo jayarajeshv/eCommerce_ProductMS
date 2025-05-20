@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Service("FakeStoreProductService")
 public class FakeStoreProductService implements IProductService {
     @Value("${fakestore-api-url}")
     private String fakestoreUrl;
@@ -35,7 +35,7 @@ public class FakeStoreProductService implements IProductService {
     @Override
     public List<Product> getAllProducts() throws NoProductsFoundException {
         List<Product> products = new ArrayList<>();
-        FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForObject(fakestoreUrl+"/test", FakeStoreProductDto[].class);
+        FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForObject(fakestoreUrl, FakeStoreProductDto[].class);
         if (fakeStoreProductDtos == null) {
             throw new NoProductsFoundException("No Products Found");
         }
