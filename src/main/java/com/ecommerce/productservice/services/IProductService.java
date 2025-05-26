@@ -1,5 +1,6 @@
 package com.ecommerce.productservice.services;
 
+import com.ecommerce.productservice.exceptions.CategoryNotFoundException;
 import com.ecommerce.productservice.exceptions.NoProductsFoundException;
 import com.ecommerce.productservice.exceptions.ProductNotFoundException;
 import com.ecommerce.productservice.models.Product;
@@ -11,11 +12,11 @@ public interface IProductService {
 
     List<Product> getAllProducts() throws NoProductsFoundException;
 
-    Product createProduct(Product product);
+    Product createProduct(Product product) throws CategoryNotFoundException;
 
     Product updateProduct(Product product);
 
-    void deleteProduct(Long productId);
+    String deleteProduct(Long productId) throws ProductNotFoundException;
 
     //Default method used to reserve method for service class
     default Product testMethod() {

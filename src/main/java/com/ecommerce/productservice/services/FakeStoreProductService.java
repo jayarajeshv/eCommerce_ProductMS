@@ -56,8 +56,8 @@ public class FakeStoreProductService implements IProductService {
     }
 
     @Override
-    public void deleteProduct(Long productId) {
-
+    public String deleteProduct(Long productId) {
+        return null;
     }
 
     private Product convertFakeStoreDtoToProduct(FakeStoreProductDto fakeStoreProductDto) {

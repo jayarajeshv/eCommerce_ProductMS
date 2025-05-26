@@ -2,6 +2,7 @@ package com.ecommerce.productservice.exceptionHandlers;
 
 import com.ecommerce.productservice.dtos.NoProductsFoundExceptionDto;
 import com.ecommerce.productservice.dtos.ProductNotFoundExceptionDto;
+import com.ecommerce.productservice.exceptions.CategoryNotFoundException;
 import com.ecommerce.productservice.exceptions.NoProductsFoundException;
 import com.ecommerce.productservice.exceptions.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,12 @@ public class ProductServiceExceptionHandler {
         ProductNotFoundExceptionDto dto = new ProductNotFoundExceptionDto();
         dto.setProductId(exception.getProductId());
         dto.setMessage(exception.getMessage());
-        dto.setResolution("Product "+exception.getProductId()+" is unavailable currently.");
+        dto.setResolution("Product " + exception.getProductId() + " is unavailable currently.");
         return new ResponseEntity<>(dto, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<String> ProductNotFoundExceptionHandler(CategoryNotFoundException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 }
