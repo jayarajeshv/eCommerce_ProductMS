@@ -9,11 +9,11 @@ import lombok.Setter;
 @Setter
 @Entity(name = "products")
 public class Product extends BaseModel {
-    String title;
-    Double price;
-    String description;
+    private String title;
+    private Double price;
+    private String description;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn
     @JsonBackReference
-    Category category;
+    private Category category;
 }

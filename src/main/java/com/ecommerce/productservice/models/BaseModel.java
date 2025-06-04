@@ -15,7 +15,7 @@ import java.util.Date;
 public abstract class BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //Auto Increment
-    Long id;
-    Date createdAt;
-    Date modifiedAt;
+    private Long id;
+    private Date createdAt;
+    private Date modifiedAt;
 }

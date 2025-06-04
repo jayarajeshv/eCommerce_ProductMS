@@ -15,9 +15,8 @@ import java.util.List;
 @Entity(name = "categories")
 public class Category extends BaseModel {
     @Column(unique = true, nullable = false)
-    String title;
+    private String title;
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     @JsonIgnore
-    List<Product> product;
-
+    private List<Product> product;
 }
