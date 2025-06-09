@@ -30,7 +30,7 @@ public class ProductController {
         this.authCommons = authCommons;
     }
 
-    @GetMapping("/{id}/{tokenValue}")
+    @GetMapping("/{id}/{tokenValue}")// Checking GET request from here and POST method from UserAuthService for validateToken mehtod.
     public ResponseEntity<ProductResponseDto> getProductById(@PathVariable("id") Long productId, @PathVariable("tokenValue") String tokenValue) throws ProductNotFoundException, UnAuthorizedAccessException {
         UserResponseDto userResponseDto = authCommons.validateToken(tokenValue);
         if (userResponseDto == null) {
