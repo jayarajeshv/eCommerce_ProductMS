@@ -5,9 +5,9 @@ import com.ecommerce.productservice.dtos.ProductRequestDto;
 import com.ecommerce.productservice.dtos.ProductResponseDto;
 import com.ecommerce.productservice.dtos.UserResponseDto;
 import com.ecommerce.productservice.exceptions.CategoryNotFoundException;
+import com.ecommerce.productservice.exceptions.InvalidTokenException;
 import com.ecommerce.productservice.exceptions.NoProductsFoundException;
 import com.ecommerce.productservice.exceptions.ProductNotFoundException;
-import com.ecommerce.productservice.exceptions.UnAuthorizedAccessException;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
 import com.ecommerce.productservice.services.IProductService;
@@ -30,12 +30,9 @@ public class ProductController {
         this.authCommons = authCommons;
     }
 
-    @GetMapping("/{id}/{tokenValue}")
-    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable("id") Long productId, @PathVariable("tokenValue") String tokenValue) throws ProductNotFoundException, UnAuthorizedAccessException {
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable("id") Long productId, @RequestHeader("Token") String tokenValue) throws ProductNotFoundException, InvalidTokenException {
         UserResponseDto userResponseDto = authCommons.validateToken(tokenValue);
-        if (userResponseDto == null) {
-            throw new UnAuthorizedAccessException("UnAuthorized Access");
-        }
         return new ResponseEntity<>(fromProduct(productService.getProduct(productId)), HttpStatus.OK);
     }
 
