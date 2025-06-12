@@ -16,12 +16,10 @@ public class AuthCommons {
     }
 
     public UserResponseDto validateToken(String tokenValue) throws InvalidTokenException {
-        UserResponseDto userResponseDto;
         try {
-            userResponseDto = restTemplate.getForObject("http://localhost:9080/auth/validate/" + tokenValue, UserResponseDto.class);
+            return restTemplate.getForObject("http://localhost:9080/auth/validate/" + tokenValue, UserResponseDto.class);
         } catch (RestClientException e) {
             throw new InvalidTokenException("Invalid token");
         }
-        return userResponseDto;
     }
 }
