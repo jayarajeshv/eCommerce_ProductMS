@@ -25,6 +25,11 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @GetMapping("/prady")
+    public ResponseEntity<String> greet() {
+        return new ResponseEntity<>("Hello Prady, I Love You so much.", HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDto> getProductById(@PathVariable("id") Long productId) throws ProductNotFoundException {
         return new ResponseEntity<>(fromProduct(productService.getProduct(productId)), HttpStatus.OK);
