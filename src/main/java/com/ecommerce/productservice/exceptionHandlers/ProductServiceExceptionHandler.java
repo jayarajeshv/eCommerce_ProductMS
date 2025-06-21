@@ -32,8 +32,8 @@ public class ProductServiceExceptionHandler {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(InsufficientProductDetailsException.class)
-    public ResponseEntity<String> InsufficientProductDetailsExceptionHandler(InsufficientProductDetailsException exception) {
+    @ExceptionHandler(InsufficientDetailsException.class)
+    public ResponseEntity<String> InsufficientProductDetailsExceptionHandler(InsufficientDetailsException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

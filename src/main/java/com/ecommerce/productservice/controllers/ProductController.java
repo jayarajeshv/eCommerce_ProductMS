@@ -37,7 +37,7 @@ public class ProductController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<ProductResponseDto> createProduct(@RequestBody ProductRequestDto productRequestDto) throws CategoryNotFoundException, InsufficientProductDetailsException, ProductAlreadyExistsException, ProductCategoryMandatoryException {
+    public ResponseEntity<ProductResponseDto> createProduct(@RequestBody ProductRequestDto productRequestDto) throws CategoryNotFoundException, InsufficientDetailsException, ProductAlreadyExistsException, ProductCategoryMandatoryException {
 
         Product product = productService.createProduct(productRequestDto.getTitle(),
                 productRequestDto.getPrice(),
@@ -48,7 +48,7 @@ public class ProductController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ProductResponseDto> updateProduct(@RequestBody ProductRequestDto productRequestDto) throws ProductNotFoundException, InsufficientProductDetailsException, ProductCategoryMandatoryException, CategoryNotFoundException {
+    public ResponseEntity<ProductResponseDto> updateProduct(@RequestBody ProductRequestDto productRequestDto) throws ProductNotFoundException, InsufficientDetailsException, ProductCategoryMandatoryException, CategoryNotFoundException {
         Product product = productService.updateProduct(productRequestDto.getId(),
                 productRequestDto.getTitle(),
                 productRequestDto.getPrice(),

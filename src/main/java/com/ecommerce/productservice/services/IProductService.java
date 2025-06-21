@@ -10,9 +10,9 @@ public interface IProductService {
 
     List<Product> getAllProducts() throws NoProductsFoundException;
 
-    Product createProduct(String title, Double price, String description, String category) throws CategoryNotFoundException, InsufficientProductDetailsException, ProductAlreadyExistsException, ProductCategoryMandatoryException;
+    Product createProduct(String title, Double price, String description, String category) throws CategoryNotFoundException, InsufficientDetailsException, ProductAlreadyExistsException, ProductCategoryMandatoryException;
 
-    Product updateProduct(Long productId, String title, Double price, String description, String category) throws ProductNotFoundException, InsufficientProductDetailsException, ProductCategoryMandatoryException, CategoryNotFoundException;
+    Product updateProduct(Long productId, String title, Double price, String description, String category) throws ProductNotFoundException, InsufficientDetailsException, ProductCategoryMandatoryException, CategoryNotFoundException;
 
     String deleteProduct(Long productId) throws ProductNotFoundException;
 }

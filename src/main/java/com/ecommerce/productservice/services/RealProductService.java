@@ -48,9 +48,9 @@ public class RealProductService implements IProductService {
     }
 
     @Override
-    public Product createProduct(String title, Double price, String description, String category) throws CategoryNotFoundException, InsufficientProductDetailsException, ProductAlreadyExistsException, ProductCategoryMandatoryException {
+    public Product createProduct(String title, Double price, String description, String category) throws CategoryNotFoundException, InsufficientDetailsException, ProductAlreadyExistsException, ProductCategoryMandatoryException {
         if (title.isEmpty() || price == null || description == null) {
-            throw new InsufficientProductDetailsException("Product details cannot be null or empty");
+            throw new InsufficientDetailsException("Product details cannot be null or empty");
         }
         if (category.isEmpty()) {
             throw new ProductCategoryMandatoryException("Product cannot be created without a valid category");
@@ -75,9 +75,9 @@ public class RealProductService implements IProductService {
 
     @Override
     @CachePut(value = "Products", key = "'PRODUCT_' + #productId")
-    public Product updateProduct(Long productId, String title, Double price, String description, String category) throws ProductNotFoundException, InsufficientProductDetailsException, ProductCategoryMandatoryException, CategoryNotFoundException {
-        if (title.isEmpty() || price == null || description == null) {
-            throw new InsufficientProductDetailsException("Product details cannot be null or empty");
+    public Product updateProduct(Long productId, String title, Double price, String description, String category) throws ProductNotFoundException, InsufficientDetailsException, ProductCategoryMandatoryException, CategoryNotFoundException {
+        if (productId == null || title.isEmpty() || price == null || description == null) {
+            throw new InsufficientDetailsException("Product details cannot be null or empty");
         }
         if (category.isEmpty()) {
             throw new ProductCategoryMandatoryException("Product cannot be created without a valid category");

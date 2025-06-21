@@ -13,6 +13,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/products/**").authenticated()
+                        .requestMatchers("/categories/**").authenticated()
 //                        //.authenticated()
 //                        .hasAuthority("SCOPE_ADMIN")
                         //.anyRequest().permitAll()
