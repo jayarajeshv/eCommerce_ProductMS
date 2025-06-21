@@ -1,5 +1,6 @@
 package com.ecommerce.productservice.controllers;
 
+import com.ecommerce.productservice.dtos.CategoryResponseDto;
 import com.ecommerce.productservice.dtos.ProductRequestDto;
 import com.ecommerce.productservice.dtos.ProductResponseDto;
 import com.ecommerce.productservice.exceptions.*;
@@ -68,7 +69,10 @@ public class ProductController {
         productResponseDto.setTitle(product.getTitle());
         productResponseDto.setDescription(product.getDescription());
         productResponseDto.setPrice(product.getPrice());
-        productResponseDto.setCategory(product.getCategory());
+        CategoryResponseDto categoryResponseDto = new CategoryResponseDto();
+        categoryResponseDto.setId(product.getCategory().getId());
+        categoryResponseDto.setName(product.getCategory().getTitle());
+        productResponseDto.setCategory(categoryResponseDto);
         return productResponseDto;
     }
 

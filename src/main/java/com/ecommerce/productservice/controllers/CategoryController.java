@@ -1,5 +1,6 @@
 package com.ecommerce.productservice.controllers;
 
+import com.ecommerce.productservice.dtos.CategoryResponseDto;
 import com.ecommerce.productservice.exceptions.CategoryAlreadyExistsException;
 import com.ecommerce.productservice.exceptions.CategoryNotFoundException;
 import com.ecommerce.productservice.exceptions.InsufficientDetailsException;
@@ -18,21 +19,27 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) throws InsufficientDetailsException, CategoryNotFoundException {
+    public ResponseEntity<CategoryResponseDto> getCategoryById(@PathVariable Long id) throws InsufficientDetailsException, CategoryNotFoundException {
         Category category = categoryService.findCategoryById(id);
-        return new ResponseEntity<>(category, HttpStatus.OK);
+        return new ResponseEntity<>(fromCategory(category), HttpStatus.OK);
     }
 
     @PostMapping("/")
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) throws CategoryAlreadyExistsException, InsufficientDetailsException {
+    public ResponseEntity<CategoryResponseDto> createCategory(@RequestBody Category category) throws CategoryAlreadyExistsException, InsufficientDetailsException {
         Category createdCategory = categoryService.createCategory(category.getTitle());
-        return ResponseEntity.status(201).body(createdCategory);
+        return ResponseEntity.status(201).body(fromCategory(createdCategory));
     }
 
-
     @PutMapping("/")
-    public ResponseEntity<Category> updateCategory(@RequestBody Category category) throws InsufficientDetailsException, CategoryNotFoundException {
+    public ResponseEntity<CategoryResponseDto> updateCategory(@RequestBody Category category) throws InsufficientDetailsException, CategoryNotFoundException {
         Category updatedCategory = categoryService.updateCategory(category.getId(), category.getTitle());
-        return ResponseEntity.ok(updatedCategory);
+        return ResponseEntity.ok(fromCategory(updatedCategory));
+    }
+
+    private CategoryResponseDto fromCategory(Category category) {
+        CategoryResponseDto dto = new CategoryResponseDto();
+        dto.setId(category.getId());
+        dto.setName(category.getTitle());
+        return dto;
     }
 }
