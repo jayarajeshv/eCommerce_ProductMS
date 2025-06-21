@@ -1,12 +1,8 @@
 package com.ecommerce.productservice.controllers;
 
-import com.ecommerce.productservice.commons.AuthCommons;
 import com.ecommerce.productservice.dtos.ProductRequestDto;
 import com.ecommerce.productservice.dtos.ProductResponseDto;
-import com.ecommerce.productservice.exceptions.CategoryNotFoundException;
-import com.ecommerce.productservice.exceptions.NoProductsFoundException;
-import com.ecommerce.productservice.exceptions.ProductNotFoundException;
-import com.ecommerce.productservice.models.Category;
+import com.ecommerce.productservice.exceptions.*;
 import com.ecommerce.productservice.models.Product;
 import com.ecommerce.productservice.services.IProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,7 +18,7 @@ import java.util.List;
 public class ProductController {
     private final IProductService productService;
 
-    public ProductController(@Qualifier("RealProductService") IProductService productService, AuthCommons authCommons) {
+    public ProductController(@Qualifier("RealProductService") IProductService productService) {
         this.productService = productService;
     }
 
@@ -41,8 +37,24 @@ public class ProductController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<ProductResponseDto> createProduct(@RequestBody ProductRequestDto productRequestDto) throws CategoryNotFoundException {
-        return new ResponseEntity<>(fromProduct(productService.createProduct(toProduct(productRequestDto))), HttpStatus.CREATED);
+    public ResponseEntity<ProductResponseDto> createProduct(@RequestBody ProductRequestDto productRequestDto) throws CategoryNotFoundException, InsufficientProductDetailsException, ProductAlreadyExistsException, ProductCategoryMandatoryException {
+
+        Product product = productService.createProduct(productRequestDto.getTitle(),
+                productRequestDto.getPrice(),
+                productRequestDto.getDescription(),
+                productRequestDto.getCategory());
+
+        return new ResponseEntity<>(fromProduct(product), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<ProductResponseDto> updateProduct(@RequestBody ProductRequestDto productRequestDto) throws ProductNotFoundException, InsufficientProductDetailsException, ProductCategoryMandatoryException, CategoryNotFoundException {
+        Product product = productService.updateProduct(productRequestDto.getId(),
+                productRequestDto.getTitle(),
+                productRequestDto.getPrice(),
+                productRequestDto.getDescription(),
+                productRequestDto.getCategory());
+        return new ResponseEntity<>(fromProduct(product), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -66,16 +78,5 @@ public class ProductController {
             productResponseDtos.add(fromProduct(product));
         }
         return productResponseDtos;
-    }
-
-    private Product toProduct(ProductRequestDto productRequestDto) {
-        Product product = new Product();
-        product.setTitle(productRequestDto.getTitle());
-        product.setPrice(productRequestDto.getPrice());
-        product.setDescription(productRequestDto.getDescription());
-        Category category = new Category();
-        category.setTitle(productRequestDto.getCategory());
-        product.setCategory(category);
-        return product;
     }
 }

@@ -1,8 +1,7 @@
 package com.ecommerce.productservice.services;
 
 import com.ecommerce.productservice.dtos.FakeStoreProductDto;
-import com.ecommerce.productservice.exceptions.NoProductsFoundException;
-import com.ecommerce.productservice.exceptions.ProductNotFoundException;
+import com.ecommerce.productservice.exceptions.*;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,12 +45,13 @@ public class FakeStoreProductService implements IProductService {
     }
 
     @Override
-    public Product createProduct(Product product) {
+    public Product createProduct(String title, Double price, String description, String category) {
         return null;
     }
 
+
     @Override
-    public Product updateProduct(Product product) {
+    public Product updateProduct(Long productId, String title, Double price, String description, String category) {
         return null;
     }
 

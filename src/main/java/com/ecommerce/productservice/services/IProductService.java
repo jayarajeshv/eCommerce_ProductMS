@@ -1,8 +1,6 @@
 package com.ecommerce.productservice.services;
 
-import com.ecommerce.productservice.exceptions.CategoryNotFoundException;
-import com.ecommerce.productservice.exceptions.NoProductsFoundException;
-import com.ecommerce.productservice.exceptions.ProductNotFoundException;
+import com.ecommerce.productservice.exceptions.*;
 import com.ecommerce.productservice.models.Product;
 
 import java.util.List;
@@ -12,14 +10,9 @@ public interface IProductService {
 
     List<Product> getAllProducts() throws NoProductsFoundException;
 
-    Product createProduct(Product product) throws CategoryNotFoundException;
+    Product createProduct(String title, Double price, String description, String category) throws CategoryNotFoundException, InsufficientProductDetailsException, ProductAlreadyExistsException, ProductCategoryMandatoryException;
 
-    Product updateProduct(Product product);
+    Product updateProduct(Long productId, String title, Double price, String description, String category) throws ProductNotFoundException, InsufficientProductDetailsException, ProductCategoryMandatoryException, CategoryNotFoundException;
 
     String deleteProduct(Long productId) throws ProductNotFoundException;
-
-    //Default method used to reserve method for service class
-    default Product testMethod() {
-        return new Product();
-    }
 }

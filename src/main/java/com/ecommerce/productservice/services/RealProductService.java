@@ -1,8 +1,6 @@
 package com.ecommerce.productservice.services;
 
-import com.ecommerce.productservice.exceptions.CategoryNotFoundException;
-import com.ecommerce.productservice.exceptions.NoProductsFoundException;
-import com.ecommerce.productservice.exceptions.ProductNotFoundException;
+import com.ecommerce.productservice.exceptions.*;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
 import com.ecommerce.productservice.repositories.CategoryRepository;
@@ -50,29 +48,54 @@ public class RealProductService implements IProductService {
     }
 
     @Override
-    public Product createProduct(Product product) throws CategoryNotFoundException {
-        Category category = product.getCategory();
-        if (category == null) {
-            throw new CategoryNotFoundException("Product cannot be created without a valid category");
+    public Product createProduct(String title, Double price, String description, String category) throws CategoryNotFoundException, InsufficientProductDetailsException, ProductAlreadyExistsException, ProductCategoryMandatoryException {
+        if (title.isEmpty() || price == null || description == null) {
+            throw new InsufficientProductDetailsException("Product details cannot be null or empty");
+        }
+        if (category.isEmpty()) {
+            throw new ProductCategoryMandatoryException("Product cannot be created without a valid category");
         }
 
-        Optional<Category> categoryOptional = categoryRepository.findByTitle(category.getTitle());
-        if (categoryOptional.isEmpty()) {
-            if (category.getTitle() == null) {
-                throw new CategoryNotFoundException("Category Not Found");
-            }
-            categoryRepository.save(category);
-        } else {
-            category = categoryOptional.get();
+        Optional<Product> existingProduct = productRepository.findByTitleAndDescription(title, description);
+        if (existingProduct.isPresent()) {
+            throw new ProductAlreadyExistsException("Product with title '" + title + "' and description '" + description + "' already exists.");
         }
-        product.setCategory(category);
+
+        Product product = new Product();
+        product.setTitle(title);
+        product.setPrice(price);
+        product.setDescription(description);
+        Optional<Category> categoryOptional = categoryRepository.findByTitle(category);
+        if (categoryOptional.isEmpty()) {
+            throw new CategoryNotFoundException("Category with title '" + category + "' not found. Please create the category first.");
+        }
+        product.setCategory(categoryOptional.get());
         return productRepository.save(product);
     }
 
     @Override
-    @CachePut(value = "Products", key = "'PRODUCT_' + #product.id")
-    public Product updateProduct(Product product) {
-        return null;
+    @CachePut(value = "Products", key = "'PRODUCT_' + #productId")
+    public Product updateProduct(Long productId, String title, Double price, String description, String category) throws ProductNotFoundException, InsufficientProductDetailsException, ProductCategoryMandatoryException, CategoryNotFoundException {
+        if (title.isEmpty() || price == null || description == null) {
+            throw new InsufficientProductDetailsException("Product details cannot be null or empty");
+        }
+        if (category.isEmpty()) {
+            throw new ProductCategoryMandatoryException("Product cannot be created without a valid category");
+        }
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalProduct.isEmpty()) {
+            throw new ProductNotFoundException("Product with id " + productId + " not found", productId);
+        }
+        Product product = optionalProduct.get();
+        product.setTitle(title);
+        product.setPrice(price);
+        product.setDescription(description);
+        Optional<Category> categoryOptional = categoryRepository.findByTitle(category);
+        if (categoryOptional.isEmpty()) {
+            throw new CategoryNotFoundException("Category with title '" + category + "' not found. Please create the category first.");
+        }
+        product.setCategory(categoryOptional.get());
+        return productRepository.save(product);
     }
 
     @Override

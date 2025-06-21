@@ -2,9 +2,7 @@ package com.ecommerce.productservice.exceptionHandlers;
 
 import com.ecommerce.productservice.dtos.NoProductsFoundExceptionDto;
 import com.ecommerce.productservice.dtos.ProductNotFoundExceptionDto;
-import com.ecommerce.productservice.exceptions.CategoryNotFoundException;
-import com.ecommerce.productservice.exceptions.NoProductsFoundException;
-import com.ecommerce.productservice.exceptions.ProductNotFoundException;
+import com.ecommerce.productservice.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -32,5 +30,20 @@ public class ProductServiceExceptionHandler {
     @ExceptionHandler(CategoryNotFoundException.class)
     public ResponseEntity<String> ProductNotFoundExceptionHandler(CategoryNotFoundException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InsufficientProductDetailsException.class)
+    public ResponseEntity<String> InsufficientProductDetailsExceptionHandler(InsufficientProductDetailsException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ProductAlreadyExistsException.class)
+    public ResponseEntity<String> ProductAlreadyExistsExceptionHandler(ProductAlreadyExistsException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ProductCategoryMandatoryException.class)
+    public ResponseEntity<String> ProductCategoryMandatoryExceptionHandler(ProductCategoryMandatoryException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
