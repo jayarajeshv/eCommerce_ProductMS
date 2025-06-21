@@ -7,13 +7,17 @@ import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
 import com.ecommerce.productservice.repositories.CategoryRepository;
 import com.ecommerce.productservice.repositories.ProductRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service("RealProductService")
-//@Primary
+@Primary
 public class RealProductService implements IProductService {
 
     private final ProductRepository productRepository;
@@ -25,6 +29,7 @@ public class RealProductService implements IProductService {
     }
 
     @Override
+    @Cacheable(value = "Products", key = "'PRODUCT_' + #productId")
     public Product getProduct(Long productId) throws ProductNotFoundException {
 //        Optional<Product> product = productRepository.findById(productId);
 //        if (product.isEmpty()) {
@@ -35,6 +40,7 @@ public class RealProductService implements IProductService {
     }
 
     @Override
+    @Cacheable(value = "AllProducts")
     public List<Product> getAllProducts() throws NoProductsFoundException {
         List<Product> products = productRepository.findAll();
         if (products.isEmpty()) {
@@ -64,11 +70,13 @@ public class RealProductService implements IProductService {
     }
 
     @Override
+    @CachePut(value = "Products", key = "'PRODUCT_' + #product.id")
     public Product updateProduct(Product product) {
         return null;
     }
 
     @Override
+    @CacheEvict(value = "Products", key = "'PRODUCT_' + #productId")
     public String deleteProduct(Long productId) throws ProductNotFoundException {
         productRepository.findProductById(productId).orElseThrow(() -> new ProductNotFoundException("Product with " + productId + "doesn't exist in the system", productId));
         productRepository.deleteById(productId);

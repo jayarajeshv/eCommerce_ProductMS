@@ -3,9 +3,7 @@ package com.ecommerce.productservice.controllers;
 import com.ecommerce.productservice.commons.AuthCommons;
 import com.ecommerce.productservice.dtos.ProductRequestDto;
 import com.ecommerce.productservice.dtos.ProductResponseDto;
-import com.ecommerce.productservice.dtos.UserResponseDto;
 import com.ecommerce.productservice.exceptions.CategoryNotFoundException;
-import com.ecommerce.productservice.exceptions.InvalidTokenException;
 import com.ecommerce.productservice.exceptions.NoProductsFoundException;
 import com.ecommerce.productservice.exceptions.ProductNotFoundException;
 import com.ecommerce.productservice.models.Category;
@@ -23,19 +21,18 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
     private final IProductService productService;
-    private final AuthCommons authCommons;
 
     public ProductController(@Qualifier("RealProductService") IProductService productService, AuthCommons authCommons) {
         this.productService = productService;
-        this.authCommons = authCommons;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDto> getProductById(@PathVariable("id") Long productId
 //            , @RequestHeader("Token") String tokenValue
-    ) throws ProductNotFoundException, InvalidTokenException {
+    ) throws ProductNotFoundException {
 //        UserResponseDto userResponseDto = authCommons.validateToken(tokenValue);
-        return new ResponseEntity<>(fromProduct(productService.getProduct(productId)), HttpStatus.OK);
+        Product product = productService.getProduct(productId);
+        return new ResponseEntity<>(fromProduct(product), HttpStatus.OK);
     }
 
     @GetMapping("/")
