@@ -1,7 +1,10 @@
 package com.ecommerce.productservice.services;
 
+import com.ecommerce.productservice.dtos.CategoryResponseDto;
 import com.ecommerce.productservice.dtos.FakeStoreProductDto;
-import com.ecommerce.productservice.exceptions.*;
+import com.ecommerce.productservice.dtos.ProductResponseDto;
+import com.ecommerce.productservice.exceptions.NoProductsFoundException;
+import com.ecommerce.productservice.exceptions.ProductNotFoundException;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,16 +26,16 @@ public class FakeStoreProductService implements IProductService {
     }
 
     @Override
-    public Product getProduct(Long productId) throws ProductNotFoundException {
+    public ProductResponseDto getProduct(Long productId) throws ProductNotFoundException {
         FakeStoreProductDto fakeStoreProductDto = restTemplate.getForObject(fakestoreUrl + productId, FakeStoreProductDto.class);
         if (fakeStoreProductDto == null) {
             throw new ProductNotFoundException("Sorry Product with id " + productId + " not found :-(", productId);
         }
-        return convertFakeStoreDtoToProduct(fakeStoreProductDto);
+        return fromProduct(convertFakeStoreDtoToProduct(fakeStoreProductDto));
     }
 
     @Override
-    public List<Product> getAllProducts() throws NoProductsFoundException {
+    public List<ProductResponseDto> getAllProducts() throws NoProductsFoundException {
         List<Product> products = new ArrayList<>();
         FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForObject(fakestoreUrl, FakeStoreProductDto[].class);
         if (fakeStoreProductDtos == null) {
@@ -41,17 +44,17 @@ public class FakeStoreProductService implements IProductService {
         for (FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos) {
             products.add(convertFakeStoreDtoToProduct(fakeStoreProductDto));
         }
-        return products;
+        return fromProducts(products);
     }
 
     @Override
-    public Product createProduct(String title, Double price, String description, String category) {
+    public ProductResponseDto createProduct(String title, Double price, String description, String category) {
         return null;
     }
 
 
     @Override
-    public Product updateProduct(Long productId, String title, Double price, String description, String category) {
+    public ProductResponseDto updateProduct(Long productId, String title, Double price, String description, String category) {
         return null;
     }
 
@@ -74,4 +77,26 @@ public class FakeStoreProductService implements IProductService {
         product.setCategory(category);
         return product;
     }
+
+    private ProductResponseDto fromProduct(Product product) {
+        ProductResponseDto productResponseDto = new ProductResponseDto();
+        productResponseDto.setId(product.getId());
+        productResponseDto.setTitle(product.getTitle());
+        productResponseDto.setDescription(product.getDescription());
+        productResponseDto.setPrice(product.getPrice());
+        CategoryResponseDto categoryResponseDto = new CategoryResponseDto();
+        categoryResponseDto.setId(product.getCategory().getId());
+        categoryResponseDto.setName(product.getCategory().getTitle());
+        productResponseDto.setCategory(categoryResponseDto);
+        return productResponseDto;
+    }
+
+    private List<ProductResponseDto> fromProducts(List<Product> allProducts) {
+        List<ProductResponseDto> productResponseDtos = new ArrayList<>();
+        for (Product product : allProducts) {
+            productResponseDtos.add(fromProduct(product));
+        }
+        return productResponseDtos;
+    }
+
 }

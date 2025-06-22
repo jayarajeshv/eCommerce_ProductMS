@@ -1,5 +1,7 @@
 package com.ecommerce.productservice.services;
 
+import com.ecommerce.productservice.dtos.CategoryResponseDto;
+import com.ecommerce.productservice.dtos.ProductResponseDto;
 import com.ecommerce.productservice.exceptions.*;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
@@ -11,6 +13,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,27 +31,23 @@ public class RealProductService implements IProductService {
 
     @Override
     @Cacheable(value = "Products", key = "'PRODUCT_' + #productId")
-    public Product getProduct(Long productId) throws ProductNotFoundException {
-//        Optional<Product> product = productRepository.findById(productId);
-//        if (product.isEmpty()) {
-//            throw new ProductNotFoundException("Product with id " + productId + " not found", productId);
-//        }
-//        return product.get();
-        return productRepository.findProductById(productId).orElseThrow(() -> new ProductNotFoundException("Product with id " + productId + " not found", productId));
+    public ProductResponseDto getProduct(Long productId) throws ProductNotFoundException {
+        Product product = productRepository.findProductById(productId).orElseThrow(() -> new ProductNotFoundException("Product with id " + productId + " not found", productId));
+        return fromProduct(product);
     }
 
     @Override
     @Cacheable(value = "AllProducts")
-    public List<Product> getAllProducts() throws NoProductsFoundException {
+    public List<ProductResponseDto> getAllProducts() throws NoProductsFoundException {
         List<Product> products = productRepository.findAll();
         if (products.isEmpty()) {
             throw new NoProductsFoundException("No products found");
         }
-        return products;
+        return fromProducts(products);
     }
 
     @Override
-    public Product createProduct(String title, Double price, String description, String category) throws CategoryNotFoundException, InsufficientDetailsException, ProductAlreadyExistsException, ProductCategoryMandatoryException {
+    public ProductResponseDto createProduct(String title, Double price, String description, String category) throws CategoryNotFoundException, InsufficientDetailsException, ProductAlreadyExistsException, ProductCategoryMandatoryException {
         if (title.isEmpty() || price == null || description == null) {
             throw new InsufficientDetailsException("Product details cannot be null or empty");
         }
@@ -70,12 +69,12 @@ public class RealProductService implements IProductService {
             throw new CategoryNotFoundException("Category with title '" + category + "' not found. Please create the category first.");
         }
         product.setCategory(categoryOptional.get());
-        return productRepository.save(product);
+        return fromProduct(productRepository.save(product));
     }
 
     @Override
     @CachePut(value = "Products", key = "'PRODUCT_' + #productId")
-    public Product updateProduct(Long productId, String title, Double price, String description, String category) throws ProductNotFoundException, InsufficientDetailsException, ProductCategoryMandatoryException, CategoryNotFoundException {
+    public ProductResponseDto updateProduct(Long productId, String title, Double price, String description, String category) throws ProductNotFoundException, InsufficientDetailsException, ProductCategoryMandatoryException, CategoryNotFoundException {
         if (productId == null || title.isEmpty() || price == null || description == null) {
             throw new InsufficientDetailsException("Product details cannot be null or empty");
         }
@@ -95,7 +94,7 @@ public class RealProductService implements IProductService {
             throw new CategoryNotFoundException("Category with title '" + category + "' not found. Please create the category first.");
         }
         product.setCategory(categoryOptional.get());
-        return productRepository.save(product);
+        return fromProduct(productRepository.save(product));
     }
 
     @Override
@@ -104,5 +103,26 @@ public class RealProductService implements IProductService {
         productRepository.findProductById(productId).orElseThrow(() -> new ProductNotFoundException("Product with " + productId + "doesn't exist in the system", productId));
         productRepository.deleteById(productId);
         return "Product with id " + productId + " deleted successfully";
+    }
+
+    private ProductResponseDto fromProduct(Product product) {
+        ProductResponseDto productResponseDto = new ProductResponseDto();
+        productResponseDto.setId(product.getId());
+        productResponseDto.setTitle(product.getTitle());
+        productResponseDto.setDescription(product.getDescription());
+        productResponseDto.setPrice(product.getPrice());
+        CategoryResponseDto categoryResponseDto = new CategoryResponseDto();
+        categoryResponseDto.setId(product.getCategory().getId());
+        categoryResponseDto.setName(product.getCategory().getTitle());
+        productResponseDto.setCategory(categoryResponseDto);
+        return productResponseDto;
+    }
+
+    private List<ProductResponseDto> fromProducts(List<Product> allProducts) {
+        List<ProductResponseDto> productResponseDtos = new ArrayList<>();
+        for (Product product : allProducts) {
+            productResponseDtos.add(fromProduct(product));
+        }
+        return productResponseDtos;
     }
 }
