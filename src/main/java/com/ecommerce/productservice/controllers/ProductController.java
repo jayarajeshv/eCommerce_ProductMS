@@ -5,6 +5,7 @@ import com.ecommerce.productservice.dtos.ProductResponseDto;
 import com.ecommerce.productservice.exceptions.*;
 import com.ecommerce.productservice.services.IProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,5 +56,17 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable("id") Long productId) throws ProductNotFoundException {
         return new ResponseEntity<>(productService.deleteProduct(productId), HttpStatus.OK);
+    }
+
+    @GetMapping("/title/{title}/{pageNumber}/{pageSize}")
+    public ResponseEntity<Page<ProductResponseDto>> getProductsByTitle(@PathVariable("title") String title,
+                                                                       @PathVariable("pageNumber") int pageNumber,
+                                                                       @PathVariable("pageSize") int pageSize) throws NoProductsFoundException {
+        return new ResponseEntity<>(productService.getProductsByTitle(title, pageNumber, pageSize), HttpStatus.OK);
+    }
+
+    @GetMapping("/health")
+    public String healthCheck() {
+        return "Product Service is running";
     }
 }

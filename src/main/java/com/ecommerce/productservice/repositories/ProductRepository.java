@@ -1,9 +1,10 @@
 package com.ecommerce.productservice.repositories;
 
 import com.ecommerce.productservice.models.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.Optional;
 
 @Repository
@@ -23,4 +24,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findProductById(Long productId);
 
     Optional<Product> findByTitleAndDescription(String title, String description);
+
+    Page<Product> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 }

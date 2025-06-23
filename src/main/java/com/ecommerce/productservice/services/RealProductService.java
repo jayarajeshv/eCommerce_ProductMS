@@ -11,6 +11,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -104,6 +107,20 @@ public class RealProductService implements IProductService {
         productRepository.deleteById(productId);
         return "Product with id " + productId + " deleted successfully";
     }
+
+    @Override
+    public Page<ProductResponseDto> getProductsByTitle(String title, int pageNumber, int pageSize) throws NoProductsFoundException { // Pagination Implementation
+        //Sorting by title
+        Sort sort = Sort
+                .by(Sort.Direction.ASC, "title")
+                .and(Sort.by(Sort.Direction.ASC, "price"));
+        Page<Product> products = productRepository.findByTitleContainingIgnoreCase(title, PageRequest.of(pageNumber, pageSize, sort));
+        if (products.isEmpty()) {
+            throw new NoProductsFoundException("No products found with title containing '" + title + "'");
+        }
+        return products.map(this::fromProduct);
+    }
+
 
     private ProductResponseDto fromProduct(Product product) {
         ProductResponseDto productResponseDto = new ProductResponseDto();

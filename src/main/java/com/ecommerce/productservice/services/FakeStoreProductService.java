@@ -8,6 +8,7 @@ import com.ecommerce.productservice.exceptions.ProductNotFoundException;
 import com.ecommerce.productservice.models.Category;
 import com.ecommerce.productservice.models.Product;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -62,6 +63,12 @@ public class FakeStoreProductService implements IProductService {
     public String deleteProduct(Long productId) {
         return null;
     }
+
+    @Override
+    public Page<ProductResponseDto> getProductsByTitle(String title, int pageNumber, int pageSize){
+        return null;
+    }
+
 
     private Product convertFakeStoreDtoToProduct(FakeStoreProductDto fakeStoreProductDto) {
         if (fakeStoreProductDto == null) {

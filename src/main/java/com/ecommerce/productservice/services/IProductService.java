@@ -2,6 +2,7 @@ package com.ecommerce.productservice.services;
 
 import com.ecommerce.productservice.dtos.ProductResponseDto;
 import com.ecommerce.productservice.exceptions.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface IProductService {
     ProductResponseDto updateProduct(Long productId, String title, Double price, String description, String category) throws ProductNotFoundException, InsufficientDetailsException, ProductCategoryMandatoryException, CategoryNotFoundException;
 
     String deleteProduct(Long productId) throws ProductNotFoundException;
+
+    Page<ProductResponseDto> getProductsByTitle(String title, int pageNumber, int pageSize) throws NoProductsFoundException;
 }
