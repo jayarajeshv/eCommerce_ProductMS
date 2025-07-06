@@ -17,7 +17,7 @@ public class AuthCommons {
 
     public UserResponseDto validateToken(String tokenValue) throws InvalidTokenException {
         try {
-            return restTemplate.getForObject("http://localhost:9080/auth/validate/" + tokenValue, UserResponseDto.class);
+            return restTemplate.getForObject("http://USERSERVICE/auth/validate/" + tokenValue, UserResponseDto.class);
         } catch (RestClientException e) {
             throw new InvalidTokenException("Invalid token");
         }
