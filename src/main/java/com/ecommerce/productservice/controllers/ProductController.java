@@ -21,13 +21,13 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<ProductResponseDto> getProductById(@PathVariable("id") Long productId) throws ProductNotFoundException {
         ProductResponseDto productResponseDto = productService.getProduct(productId);
         return new ResponseEntity<>(productResponseDto, HttpStatus.OK);
     }
 
-    @GetMapping("/")
+    @GetMapping("/get")
     public ResponseEntity<List<ProductResponseDto>> getAllProducts() throws NoProductsFoundException {
         return new ResponseEntity<>(productService.getAllProducts(), HttpStatus.OK);
     }
