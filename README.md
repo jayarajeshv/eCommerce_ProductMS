@@ -4,7 +4,9 @@
 
 This project provides a backend service for managing eCommerce product information (name, description, price, etc.). Clients such as web or mobile apps can interact with the product catalog through RESTful HTTP endpoints.
 
-**Core Features:**
+![Alt text](src/main/resources/draw.io/ProductMS.jpg)
+---
+### Core Features
 
 - Add new products
 - Retrieve product details (single or all)
@@ -12,7 +14,7 @@ This project provides a backend service for managing eCommerce product informati
 - Delete products
 - Robust data validation and error handling
 - Secure data transfer via DTOs
-
+---
 ### Architecture
 
 - **Controller Layer:** Handles HTTP requests/responses, maps endpoints, delegates to the service layer.
@@ -21,6 +23,7 @@ This project provides a backend service for managing eCommerce product informati
 - **Model/Entity Layer:** Product entity definitions mapped to the database.
 - **DTOs:** Used for secure request/response payloads.
 
+---
 ### Technologies
 
 - Java
